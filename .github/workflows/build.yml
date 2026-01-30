@@ -1,0 +1,48 @@
+name: Build (manual) - PNG2ICO-Web
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        # se nel tuo repo non c'è package-lock.json, usa: npm install
+
+      - name: Build
+        env:
+          # forza la base prod corretta, se usi una config condizionale
+          NODE_ENV: production
+        run: npm run build
+
+      # (opzionale ma utile) Verifica che index.html e asset esistano davvero
+      - name: Sanity check dist
+        run: |
+          ls -al dist
+          test -s dist/index.html
+          test -d dist/assets
+
+      - name: Compress dist -> png2ico-web-dist.zip
+        run: |
+          cd dist
+          zip -r ../png2ico-web-dist.zip .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: png2ico-web-dist
+          path: png2ico-web-dist.zip
+          if-no-files-found: error
+``
