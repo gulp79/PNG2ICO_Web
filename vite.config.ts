@@ -4,8 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
-  // ... altre config
-  base: '/png2ico/', // <--- AGGIUNGI QUESTA RIGA ESATTAMENTE COSÌ
+  base: '/png2ico/',
   plugins: [
     react(),
     mode === 'development' && componentTagger(),
